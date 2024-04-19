@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Model Prediction</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-row {
+            margin-bottom: 10px;
+        }
+        label {
+            display: inline-block;
+            width: 180px;
+            text-align: right;
+            margin-right: 10px;
+        }
+        input[type="text"], input[type="number"] {
+            width: 300px;
+        }
+        button {
+            margin-left: 190px;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        $(document).ready(function() {
+            // IDs of the inputs to keep visible
+            var visibleIds = ['popularity', 'vote_average', 'budget', 'revenue', 'runtime', 'vote_count', 'title'];
+    
+            // Hide all inputs
+            $('input').each(function() {
+                // If the input's id is not in the list, hide its parent .form-row
+                if (!visibleIds.includes(this.id)) {
+                    $(this).closest('.form-row').hide();
+                }
+            });
+    
+            $('#predictButton').click(function() {
+                var formData = $('#predictionForm').serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '/predict',
+                    data: formData,
+                    success: function(response) {
+                        $('#predictionResult').text('Popularity prediction: ' + response.prediction);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+    
+    <h2>Input Features of the Movie</h2>
+    <form id="predictionForm">
+        <div class="form-row">
+            <label for="id">id:</label>
+            <input type="text" id="id" name="id" value="24038" required>
+        </div>
+        <div class="form-row">
+            <label for="original_title">original_title:</label>
+            <input type="text" id="original_title" name="original_title" value="976-EVIL" required>
+        </div>
+        <div class="form-row">
+            <label for="title">title:</label>
+            <input type="text" id="title" name="title" value="976-EVIL" required>
+        </div>
+        <div class="form-row">
+            <label for="original_language">original_language:</label>
+            <input type="text" id="original_language" name="original_language" value="en" required>
+        </div>
+        <div class="form-row">
+            <label for="overview">overview:</label>
+            <input type="text" id="overview" name="overview" value="People who dial 976-EVIL receive supernatural powers and turn into satanic killers. When Spike dialed 976-EVIL, he knew it was an expensive toll call, but he didn't know that he'd have to pay for it with his soul." required>
+        </div>
+        <div class="form-row">
+            <label for="tagline">tagline:</label>
+            <input type="text" id="tagline" name="tagline" value="Now, horror has a brand new number." required>
+        </div>
+        <div class="form-row">
+            <label for="release_date">release_date:</label>
+            <input type="text" id="release_date" name="release_date" value="09/12/1988" required>
+        </div>
+        <div class="form-row">
+            <label for="poster_path">poster_path:</label>
+            <input type="text" id="poster_path" name="poster_path" value="/mWSpulrInC2DjbXhysjrxtvJFfL.jpg" required>
+        </div>
+        <div class="form-row">
+            <label for="popularity">popularity:</label>
+            <input type="number" step="0.001" id="popularity" name="popularity" value="7.324" required>
+        </div>
+        <div class="form-row">
+            <label for="vote_count">vote_count:</label>
+            <input type="text" id="vote_count" name="vote_count" value="89" required>
+        </div>
+        <div class="form-row">
+            <label for="vote_average">vote_average:</label>
+            <input type="number" step="0.1" id="vote_average" name="vote_average" value="5.1" required>
+        </div>
+        <div class="form-row">
+            <label for="budget">budget:</label>
+            <input type="number" id="budget" name="budget" value="0" required>
+        </div>
+        <div class="form-row">
+            <label for="revenue">revenue:</label>
+            <input type="number" id="revenue" name="revenue" value="2955917" required>
+        </div>
+        <div class="form-row">
+            <label for="runtime">runtime:</label>
+            <input type="number" id="runtime" name="runtime" value="92" required>
+        </div>
+        <div class="form-row">
+            <label for="status">status:</label>
+            <input type="text" id="status" name="status" value="Released" required>
+        </div>
+        <div class="form-row">
+            <label for="adult">adult:</label>
+            <input type="text" id="adult" name="adult" value="FALSE" required>
+        </div>
+        <div class="form-row">
+            <label for="backdrop_path">backdrop_path:</label>
+            <input type="text" id="backdrop_path" name="backdrop_path" value="/mk1KeasAfwUGfFfzlbUVKINxC7Q.jpg" required>
+        </div>
+        <div class="form-row">
+            <label for="genre_names">genre_names:</label>
+            <input type="text" id="genre_names" name="genre_names" value="Horror" required>
+        </div>
+        <div class="form-row">
+            <label for="collection">collection:</label>
+            <input type="number" id="collection" name="collection" value="135501" required>
+        </div>
+        <div class="form-row">
+            <label for="collection_name">collection_name:</label>
+            <input type="text" id="collection_name" name="collection_name" value="976-EVIL Collection" required>
+        </div>
+        <div class="form-row">
+            <button type="button" id="predictButton">Predict</button>
+        </div>
+    </form>
+    
+    <h2 id="predictionResult"></h2>
+
+    <script>
+        $(document).ready(function() {
+            $('#predictButton').click(function() {
+                var formData = $('#predictionForm').serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '/predict',
+                    data: formData,
+                    success: function(response) {
+                        $('#predictionResult').text('Predicted Popularity: ' + response.prediction);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

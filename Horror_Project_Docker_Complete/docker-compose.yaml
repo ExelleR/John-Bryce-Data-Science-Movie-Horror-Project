@@ -1,0 +1,47 @@
+version: '3.8'
+services:
+  model-training:
+    build:
+      context: ./training
+      dockerfile: Dockerfile_training
+    volumes:
+      - ./:/usr/src/app 
+ 
+    # volumes:
+    #   - model-data:/usr/src/app
+
+  model-prediction:
+    build:
+      context: ./prediction
+      dockerfile: Dockerfile_prediction
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./:/usr/src/app/training
+    depends_on:
+      - model-training
+
+
+# volumes:
+#   model-data:
+
+
+
+## TODO
+## 1) In the flask container make exactly the same transformations on the input of the user (array of initinal features) as was done for on the dataset in the 
+## training container to train the model 
+## 2) Use the transformed input data (features array but with changed number of features ) to predict the popularity (log1p format)
+## 3) Transform the prediction to the original value with : np.expm1()
+# Apply log1p
+##log_x = np.log1p(x)
+
+## FEatures: id, original_title , title, original_language, overview 
+# Reverse the transformation with expm1
+##original_x = np.expm1(log_x)
+
+
+#TODO
+# 1) Save the scaler object after the tarining preprocessing 
+# 1) Load the scaling objecrt from pickle file 
+# 1) Add Scaling right before fit function only for X (not y !!!)
+
